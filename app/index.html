@@ -102,29 +102,31 @@
         </button>
       </div>
 
-      <form id="createForm" class="modal-body">
-        <label class="field">
-          <span class="label">Session Name</span>
-          <input id="createName" class="input" type="text" placeholder="e.g., Friday Lunch Options" maxlength="80" required />
-        </label>
+      <div class="modal-body">
+        <form id="createForm">
+          <label class="field">
+            <span class="label">Session Name</span>
+            <input id="createName" class="input" type="text" placeholder="e.g., Friday Lunch Options" maxlength="80" required />
+          </label>
 
-        <div class="divider"></div>
+          <div class="divider"></div>
 
-        <div class="row space-between">
-          <div>
-            <div class="label">Choices</div>
-            <div class="muted muted-sm">At least 2 choices required. Titles are required; notes are optional.</div>
+          <div class="row space-between">
+            <div>
+              <div class="label">Choices</div>
+              <div class="muted muted-sm">At least 2 choices required. Titles are required; notes are optional.</div>
+            </div>
+            <button id="addCreateChoiceBtn" type="button" class="btn btn-ghost btn-sm"><i data-lucide="plus" class="icon icon-sm"></i> Add Choice</button>
           </div>
-          <button id="addCreateChoiceBtn" type="button" class="btn btn-ghost btn-sm"><i data-lucide="plus" class="icon icon-sm"></i> Add Choice</button>
-        </div>
 
-        <div id="createChoices" class="choice-editor-list"></div>
+          <div id="createChoices" class="choice-editor-list"></div>
 
-        <div class="actions">
-          <button type="button" class="btn btn-ghost" data-close="true">Cancel</button>
-          <button id="createSubmitBtn" type="submit" class="btn btn-primary">Create Session</button>
-        </div>
-      </form>
+          <div class="actions">
+            <button type="button" class="btn btn-ghost" data-close="true">Cancel</button>
+            <button id="createSubmitBtn" type="submit" class="btn btn-primary">Create Session</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
