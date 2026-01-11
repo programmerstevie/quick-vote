@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickVote — Landing</title>
+
+  <!-- Lucide (icons) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link href="./preflight.css" rel="stylesheet" />
+
+  <title>QuickVote — Free local voting tool (no signup)</title>
+  <meta name="description" content="Create a voting session, add choices with emojis, and vote with +1/-1. Private and local-only—stored in your browser." />
+
+  <link rel="canonical" href="https://programmerstevie.github.io/quick-vote/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="QuickVote — Make decisions with votes" />
+  <meta property="og:description" content="Free, local-only voting tool. No signup. Sessions saved in your browser." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://programmerstevie.github.io/quick-vote/" />
+  <meta property="og:image" content="https://programmerstevie.github.io/quick-vote/og.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="QuickVote — Make decisions with votes" />
+  <meta name="twitter:description" content="Free, local-only voting tool. No signup." />
+  <meta name="twitter:image" content="https://programmerstevie.github.io/quick-vote/og.png" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "QuickVote",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "url": "https://programmerstevie.github.io/quick-vote/",
+      "description": "Free local-only voting tool to create sessions, add choices, and vote. Data stays in your browser.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
+
+
+  <style>
+    :root {
+      /* Tailwind-like defaults (override these if your palette differs) */
+      --c-white: #ffffff;
+
+      --c-gray-950: #030712;
+      --c-gray-900: #111827;
+      --c-gray-800: #1f2937;
+      --c-gray-700: #374151;
+      --c-gray-600: #4b5563;
+      --c-gray-500: #6b7280;
+      --c-gray-400: #9ca3af;
+
+      --c-blue-900: #1e3a8a;
+      --c-blue-700: #1d4ed8;
+      --c-blue-600: #2563eb;
+      --c-blue-500: #3b82f6;
+      --c-blue-400: #60a5fa;
+
+      --c-cyan-400: #22d3ee;
+
+      /* alpha helpers */
+      --blue-900-20: rgba(30, 58, 138, 0.2);
+      --blue-500-10: rgba(59, 130, 246, 0.1);
+      --blue-500-20: rgba(59, 130, 246, 0.2);
+      --blue-500-30: rgba(59, 130, 246, 0.3);
+
+      --gray-800-50: rgba(31, 41, 55, 0.5);
+
+      /* radii */
+      --radius-lg: 0.5rem;
+      /* rounded-lg */
+      --radius-xl: 0.75rem;
+      /* rounded-xl */
+      --radius-2xl: 1rem;
+      /* rounded-2xl */
+
+      /* timing */
+      --t-fast: 150ms;
+      --t-med: 250ms;
+      --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+      /* typography */
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+        Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--c-white);
+      background: linear-gradient(to bottom,
+          var(--c-gray-950),
+          var(--c-gray-900),
+          var(--c-gray-950));
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+    }
+
+    /* layout */
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+    }
+
+    .max-w-5xl {
+      max-width: 64rem;
+    }
+
+    .max-w-6xl {
+      max-width: 72rem;
+    }
+
+    .max-w-4xl {
+      max-width: 56rem;
+    }
+
+    .max-w-3xl {
+      max-width: 48rem;
+    }
+
+    /* hero */
+    .hero {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      /* radial-gradient(ellipse_at_top) */
+      background: radial-gradient(ellipse at top,
+          var(--blue-900-20) 0%,
+          rgba(17, 24, 39, 0) 60%,
+          rgba(17, 24, 39, 0) 100%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      margin: 0 auto;
+      padding-top: 5rem;
+      padding-bottom: 6rem;
+    }
+
+    @media (min-width: 640px) {
+      .hero-inner {
+        padding-top: 8rem;
+        padding-bottom: 8rem;
+      }
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .stack-8>:not([hidden])~:not([hidden]) {
+      margin-top: 2rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      background: var(--blue-500-10);
+      border: 1px solid var(--blue-500-20);
+      color: var(--c-blue-400);
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .h1 {
+      font-size: 3rem;
+      /* text-5xl */
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    @media (min-width: 640px) {
+      .h1 {
+        font-size: 3.75rem;
+        /* text-6xl */
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .h1 {
+        font-size: 4.5rem;
+        /* text-7xl */
+      }
+    }
+
+    .text-gradient {
+      background: linear-gradient(to right, var(--c-blue-400), var(--c-cyan-400));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      max-width: 42rem;
+      margin: 0 auto;
+      font-size: 1.25rem;
+      /* text-xl */
+      line-height: 1.7;
+      color: var(--c-gray-400);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding-top: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .cta-row {
+        flex-direction: row;
+      }
+    }
+
+    .muted {
+      font-size: 0.875rem;
+      color: var(--c-gray-500);
+    }
+
+    /* Button (vanilla version of your Button.tsx) */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: var(--radius-lg);
+      font-weight: 600;
+      border: 0;
+      cursor: pointer;
+      user-select: none;
+      transition:
+        background-color var(--t-fast) var(--ease),
+        color var(--t-fast) var(--ease),
+        border-color var(--t-fast) var(--ease),
+        transform var(--t-fast) var(--ease),
+        box-shadow var(--t-fast) var(--ease),
+        opacity var(--t-fast) var(--ease);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn:disabled,
+    .btn[data-loading="true"] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .btn:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.06),
+        0 0 0 4px rgba(255, 255, 255, 0.08);
+    }
+
+    /* variants */
+    .btn[data-variant="primary"] {
+      /* background: #000; */
+      color: var(--c-white);
+    }
+
+    .btn[data-variant="primary"]:hover {
+      background: var(--c-gray-800);
+    }
+
+    .btn[data-variant="secondary"] {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .btn[data-variant="secondary"]:hover {
+      background: #e5e7eb;
+    }
+
+    .btn[data-variant="danger"] {
+      background: #ef4444;
+      color: var(--c-white);
+    }
+
+    .btn[data-variant="danger"]:hover {
+      background: #dc2626;
+    }
+
+    .btn[data-variant="ghost"] {
+      background: transparent;
+      color: #d1d5db;
+    }
+
+    .btn[data-variant="ghost"]:hover {
+      background: rgba(243, 244, 246, 0.08);
+      color: var(--c-white);
+    }
+
+    .btn[data-variant="outline"] {
+      background: transparent;
+      color: #e5e7eb;
+      border: 1px solid rgba(229, 231, 235, 0.18);
+    }
+
+    .btn[data-variant="outline"]:hover {
+      background: rgba(243, 244, 246, 0.06);
+    }
+
+    /* sizes */
+    .btn[data-size="sm"] {
+      height: 2rem;
+      padding: 0 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .btn[data-size="md"] {
+      height: 2.5rem;
+      padding: 0 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .btn[data-size="lg"] {
+      height: 3rem;
+      padding: 0 2rem;
+      font-size: 1rem;
+    }
+
+    .btn[data-size="icon"] {
+      height: 2.5rem;
+      width: 2.5rem;
+      padding: 0;
+    }
+
+    /* CTA override (matches LandingPage usage) */
+    .btn--cta {
+      background: var(--c-blue-600);
+    }
+
+    .btn--cta:hover {
+      background: var(--c-blue-700);
+    }
+
+    /* loading icon */
+    .btn__spinner {
+      display: none;
+    }
+
+    .btn[data-loading="true"] .btn__spinner {
+      display: inline-flex;
+    }
+
+    .spin {
+      animation: spin 900ms linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* sections */
+    .section {
+      padding: 5rem 0;
+    }
+
+    /* features grid */
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .features {
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+      .features {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .features {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      position: relative;
+      background: var(--gray-800-50);
+      border: 1px solid var(--c-gray-700);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      transition: border-color var(--t-fast) var(--ease);
+    }
+
+    .card:hover {
+      border-color: var(--c-gray-600);
+    }
+
+    .card-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .icon-box {
+      flex: 0 0 auto;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--blue-500-10);
+      color: var(--c-blue-400);
+      transition: background-color var(--t-fast) var(--ease);
+    }
+
+    .card:hover .icon-box {
+      background: var(--blue-500-20);
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--c-white);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--c-gray-400);
+    }
+
+    /* How it works */
+    .section-title {
+      margin: 0;
+      font-size: 1.875rem;
+      /* text-3xl */
+      font-weight: 700;
+      /* letter-spacing: -0.02em; */
+    }
+
+    @media (min-width: 640px) {
+      .section-title {
+        font-size: 2.25rem;
+        /* text-4xl */
+      }
+    }
+
+    .section-subtitle {
+      margin: 0.75rem 0 0 0;
+      color: var(--c-gray-400);
+      font-size: 1.125rem;
+      /* text-lg */
+    }
+
+    .mb-16 {
+      margin-bottom: 4rem;
+    }
+
+    .steps {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .steps {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+    }
+
+    .step-badge {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--c-blue-400);
+      background: var(--blue-500-10);
+      border: 2px solid var(--blue-500-30);
+    }
+
+    .step h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--c-gray-400);
+      line-height: 1.75;
+    }
+
+    /* Privacy box */
+    .privacy-box {
+      background: var(--gray-800-50);
+      border: 1px solid var(--c-gray-700);
+      border-radius: var(--radius-2xl);
+      padding: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .privacy-box {
+        padding: 3rem;
+      }
+    }
+
+    .privacy-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .privacy-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--radius-xl);
+      background: var(--blue-500-10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      color: rgb(96, 165, 250);
+    }
+
+    .privacy h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .privacy p {
+      margin: 1rem 0 0 0;
+      color: var(--c-gray-400);
+      line-height: 1.75;
+    }
+
+    .privacy strong {
+      color: var(--c-white);
+    }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 5rem;
+      border-top: 1px solid rgba(31, 41, 55, 1);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 3rem 0;
+    }
+
+    @media (min-width: 768px) {
+      .footer-inner {
+        flex-direction: row;
+      }
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand span {
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    .footer-text {
+      color: var(--c-gray-500);
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .footer-text {
+        text-align: right;
+        max-width: 36rem;
+      }
+    }
+
+    /* icon sizing helpers */
+    .i-14 svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .i-16 svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .i-20 svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .i-24 svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .i-28 svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    /* subtle entrance */
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: reveal 650ms var(--ease) forwards;
+      }
+
+      .reveal.d2 {
+        animation-delay: 80ms;
+      }
+
+      .reveal.d3 {
+        animation-delay: 140ms;
+      }
+
+      @keyframes reveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container max-w-5xl hero-inner">
+        <div class="center stack-8">
+          <div class="badge reveal">
+            <span class="i-14" aria-hidden="true"><i data-lucide="zap"></i></span>
+            <span>Free • Local-only • No signup</span>
+          </div>
+
+          <h1 class="h1 reveal d2">
+            Make decisions<br />
+            <span class="text-gradient">with votes</span>
+          </h1>
+
+          <p class="lead reveal d3">
+            A simple, fast voting tool for making group decisions. Create sessions,
+            add choices, and vote. Everything stays in your browser—no accounts, no
+            servers, no hassle.
+          </p>
+
+          <div class="cta-row reveal d3">
+            <a href="/app">
+              <button class="btn btn--cta" data-variant="primary" data-size="lg" type="button">
+                <span class="btn__spinner i-16 spin" aria-hidden="true"><i data-lucide="loader-2"></i></span>
+                <span>Open QuickVote</span>
+                <span class="i-20" aria-hidden="true"><i data-lucide="arrow-right"></i></span>
+              </button>
+            </a>
+            <p class="muted">No installation required</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="section">
+      <div class="container max-w-6xl">
+        <div class="grid features">
+          <!-- FeatureCard -->
+          <div class="card">
+            <div class="card-row">
+              <div class="icon-box i-24" aria-hidden="true"><i data-lucide="lock"></i></div>
+              <div>
+                <h3>100% Private</h3>
+                <p>All data stored locally in your browser. Nothing leaves your device.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-row">
+              <div class="icon-box i-24" aria-hidden="true"><i data-lucide="zap"></i></div>
+              <div>
+                <h3>Instant &amp; Free</h3>
+                <p>No signup, no payment, no waiting. Start voting in seconds.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-row">
+              <div class="icon-box i-24" aria-hidden="true"><i data-lucide="gauge"></i></div>
+              <div>
+                <h3>Lightning Fast</h3>
+                <p>Optimized for speed. Vote, see results instantly with smooth animations.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-row">
+              <div class="icon-box i-24" aria-hidden="true">
+                <i data-lucide="bar-chart-3"></i>
+              </div>
+              <div>
+                <h3>Visual Results</h3>
+                <p>Proportional bars show vote distribution at a glance.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-row">
+              <div class="icon-box i-24" aria-hidden="true">
+                <i data-lucide="smartphone"></i>
+              </div>
+              <div>
+                <h3>Works Everywhere</h3>
+                <p>Mobile, tablet, desktop—responsive design that works anywhere.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-row">
+              <div class="icon-box i-24" aria-hidden="true"><i data-lucide="database"></i></div>
+              <div>
+                <h3>Persistent Storage</h3>
+                <p>Sessions saved automatically. Pick up where you left off.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section">
+      <div class="container max-w-4xl">
+        <div class="center mb-16">
+          <h2 class="section-title">How it works</h2>
+          <p class="section-subtitle">Three simple steps to better decisions</p>
+        </div>
+
+        <div class="grid steps">
+          <div class="step">
+            <div class="step-badge">1</div>
+            <h3>Create a session</h3>
+            <p>
+              Name your decision and add the choices you're considering. Add emojis and
+              notes for context.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-badge">2</div>
+            <h3>Vote together</h3>
+            <p>
+              Share your screen or device. Everyone votes with +1 or -1 buttons. Watch
+              results update in real-time.
+            </p>
+          </div>
+
+          <div class="step">
+            <div class="step-badge">3</div>
+            <h3>See the winner</h3>
+            <p>
+              Visual bars show vote distribution. The leading choice is highlighted.
+              Make your decision with confidence.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section class="section">
+      <div class="container max-w-3xl">
+        <div class="privacy-box privacy">
+          <div class="privacy-row">
+            <div class="privacy-icon i-24" aria-hidden="true">
+              <i data-lucide="lock"></i>
+            </div>
+            <div>
+              <h3>Your data stays yours</h3>
+              <p>
+                QuickVote uses IndexedDB to store all sessions and votes directly in your
+                browser. No data is sent to any server. No tracking, no analytics, no
+                third parties.
+              </p>
+              <p>
+                <strong>Note:</strong> Clearing your browser data will remove all
+                sessions. This is a local tool—there's no cloud backup or account system.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta">
+      <div class="container max-w-4xl">
+        <h2 class="section-title" style="margin-bottom: 1.5rem; font-size: 2.25rem; line-height: 2.5rem;">Ready to make better decisions?</h2>
+        <p class="section-subtitle" style="margin-bottom: 2rem; margin-top: 0">
+          Start voting in seconds. No signup required.
+        </p>
+        <a href="/app">
+          <button class="btn btn--cta" data-variant="primary" data-size="lg" type="button">
+            <span class="btn__spinner i-16 spin" aria-hidden="true"><i data-lucide="loader-2"></i></span>
+            <span>Open QuickVote</span>
+            <span class="i-20" aria-hidden="true"><i data-lucide="arrow-right"></i></span>
+          </button>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container max-w-6xl">
+        <div class="footer-inner">
+          <div class="brand">
+            <span class="i-20" style="color: var(--c-blue-400)" aria-hidden="true"><i data-lucide="bar-chart-3"></i></span>
+            <span>QuickVote</span>
+          </div>
+          <p class="footer-text">
+            A free, local-only decision-making tool. Built with privacy in mind.
+          </p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Render lucide icons
+    lucide.createIcons();
+
+    // Optional helper for your Button.tsx parity:
+    // setButtonLoading(document.querySelector('.btn'), true)
+    function setButtonLoading(buttonEl, isLoading) {
+      if (!buttonEl) return;
+      buttonEl.dataset.loading = isLoading ? "true" : "false";
+      buttonEl.disabled = !!isLoading;
+    }
+    window.setButtonLoading = setButtonLoading;
+  </script>
+</body>
+
+</html>

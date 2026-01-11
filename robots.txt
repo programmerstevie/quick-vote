@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://programmerstevie.github.io/quick-vote/sitemap.xml

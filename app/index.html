@@ -1,0 +1,302 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>QuickVote — Local Vote Picker</title>
+  <meta name="description" content="A simple local-only voting tool. Create sessions, add choices, and vote with +/−. Stored in your browser (IndexedDB). No accounts." />
+
+  <link rel="stylesheet" href="preflight.css" />
+  <link rel="stylesheet" href="/app/styles.css" />
+</head>
+
+<body>
+  <main id="appView" class="app">
+    <div class="app-shell">
+      <header class="app-topbar">
+        <div class="app-topbar-left">
+          <a id="appBackBtn" class="btn btn-ghost btn-icon" title="Back" aria-label="Back" href="/">
+            <i data-lucide="arrow-left" class="icon"></i>
+          </a>
+          <div class="app-titles">
+            <div class="app-title">QuickVote</div>
+            <div class="app-subtitle" id="appSubtitle">Local-only voting sessions</div>
+          </div>
+        </div>
+        <div class="app-topbar-right">
+          <button id="newSessionBtn" class="btn btn-primary">New Session</button>
+          <button id="sessionSettingsBtn" class="btn btn-ghost btn-icon" title="Session settings" aria-label="Session settings">
+            <i data-lucide="settings" class="icon"></i>
+          </button>
+        </div>
+      </header>
+
+      <section id="loadingView" class="loading hidden" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+      </section>
+
+      <section id="dashboardView" class="view">
+        <div class="page">
+          <div class="row space-between mb-24">
+            <div>
+              <h1 class="h1">Your Sessions</h1>
+              <p class="muted">Manage and track your active votes</p>
+            </div>
+            <button id="dashboardNewBtn" class="btn btn-primary">
+              <i data-lucide="plus" class="icon icon-sm"></i>
+              New Session
+            </button>
+          </div>
+
+          <div id="dashboardEmpty" class="empty-state hidden">
+            <div class="empty-card">
+              <div class="empty-icon">
+                <i data-lucide="bar-chart-3" class="icon icon-lg"></i>
+              </div>
+              <h3>No sessions yet</h3>
+              <p class="muted">Create your first voting session to get started.</p>
+              <button id="emptyCreateBtn" class="btn btn-secondary">Create Session</button>
+            </div>
+          </div>
+
+          <div id="sessionsList" class="sessions-list"></div>
+        </div>
+      </section>
+
+      <section id="sessionView" class="view hidden">
+        <div class="page">
+          <header class="session-header">
+            <div class="session-header-left">
+              <button id="sessionBackBtn" class="btn btn-ghost btn-icon" aria-label="Back to dashboard">
+                <i data-lucide="arrow-left" class="icon"></i>
+              </button>
+              <div>
+                <h1 id="sessionName" class="h1 h1-sm"></h1>
+                <p id="sessionMeta" class="muted muted-sm"></p>
+              </div>
+            </div>
+            <button id="openSettingsBtn" class="btn btn-ghost btn-icon" aria-label="Open session settings">
+              <i data-lucide="settings" class="icon"></i>
+            </button>
+          </header>
+
+          <div id="choicesList" class="choices-list"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODAL: CREATE SESSION -->
+  <div id="createModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="createModalTitle">
+    <div class="modal-overlay" data-close="true"></div>
+    <div class="modal-card" role="document">
+      <div class="modal-head">
+        <div>
+          <div id="createModalTitle" class="modal-title">Create New Session</div>
+        </div>
+        <button class="icon-btn" data-close="true" aria-label="Close">
+          <i data-lucide="x" class="icon"></i>
+        </button>
+      </div>
+
+      <form id="createForm" class="modal-body">
+        <label class="field">
+          <span class="label">Session Name</span>
+          <input id="createName" class="input" type="text" placeholder="e.g., Friday Lunch Options" maxlength="80" required />
+        </label>
+
+        <div class="divider"></div>
+
+        <div class="row space-between">
+          <div>
+            <div class="label">Choices</div>
+            <div class="muted muted-sm">At least 2 choices required. Titles are required; notes are optional.</div>
+          </div>
+          <button id="addCreateChoiceBtn" type="button" class="btn btn-ghost btn-sm"><i data-lucide="plus" class="icon icon-sm"></i> Add Choice</button>
+        </div>
+
+        <div id="createChoices" class="choice-editor-list"></div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" data-close="true">Cancel</button>
+          <button id="createSubmitBtn" type="submit" class="btn btn-primary">Create Session</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: SETTINGS -->
+  <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-overlay" data-close="true"></div>
+    <div class="modal-card modal-card-wide" role="document">
+      <div class="modal-head">
+        <div>
+          <div id="settingsTitle" class="modal-title">Session Settings</div>
+        </div>
+        <button class="icon-btn" data-close="true" aria-label="Close">
+          <i data-lucide="x" class="icon"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <section class="block">
+          <h3 class="block-title">Manage Choices</h3>
+          <div id="settingsChoicesList" class="settings-choices"></div>
+
+          <div class="divider"></div>
+
+          <div class="row space-between">
+            <h3 class="block-title mb-0">Add New Choice</h3>
+            <button id="toggleAddChoiceBtn" type="button" class="btn btn-outline btn-sm"><i data-lucide="plus" class="icon icon-sm"></i> Add</button>
+          </div>
+
+          <form id="addChoiceForm" class="add-choice-form hidden">
+            <div class="grid-2">
+              <div class="field">
+                <span class="label">Emoji</span>
+                <button type="button" id="addChoiceEmojiBtn" class="emoji-btn" aria-label="Select emoji">🆕</button>
+              </div>
+              <label class="field">
+                <span class="label">Title</span>
+                <input id="addChoiceTitle" class="input" type="text" placeholder="New choice title" maxlength="60" required />
+              </label>
+            </div>
+            <label class="field">
+              <span class="label">Notes (optional)</span>
+              <input id="addChoiceNotes" class="input input-sm" type="text" placeholder="Optional notes" maxlength="280" />
+            </label>
+
+            <div class="row end gap">
+              <button type="button" id="cancelAddChoiceBtn" class="btn btn-ghost btn-sm">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm">Add Choice</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="block danger">
+          <h3 class="block-title danger-title">Danger Zone</h3>
+          <div class="danger-card">
+            <div>
+              <div class="danger-name">Delete Session</div>
+              <div class="danger-desc">Permanently remove this session and all data.</div>
+            </div>
+            <button id="deleteSessionBtn" class="btn btn-danger btn-sm">Delete</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMOJI PICKER (shared) -->
+  <div id="emojiOverlay" class="emoji-overlay hidden"></div>
+  <div id="emojiPicker" class="emoji-picker hidden" role="dialog" aria-modal="true" aria-label="Emoji picker">
+    <div class="emoji-search">
+      <span class="emoji-search-icon" aria-hidden="true">
+        <i data-lucide="search" class="icon icon-sm"></i>
+      </span>
+      <input id="emojiSearchInput" class="emoji-search-input" type="text" placeholder="Search emojis..." />
+    </div>
+    <div id="emojiGrid" class="emoji-grid"></div>
+    <div id="emojiEmpty" class="emoji-empty hidden">No emojis found</div>
+  </div> <!-- TEMPLATES (HTML-first rendering) -->
+
+  <!-- Dashboard: session card -->
+  <template id="tpl-session-card">
+    <button class="session-card" type="button" data-session-id="">
+      <div class="left" style="flex: 1; min-width: 0;">
+        <h3 class="title"></h3>
+        <div class="session-meta">
+          <span class="votes"></span>
+          <span class="pill-dot"></span>
+          <span class="choices"></span>
+
+          <span class="pill-dot lead-dot" hidden></span>
+          <span class="lead" hidden></span>
+        </div>
+      </div>
+      <div class="chev" aria-hidden="true">
+        <i data-lucide="chevron-right" class="icon"></i>
+      </div>
+    </button>
+  </template>
+
+  <!-- Session: choice row (vote bars) -->
+  <template id="tpl-choice-row">
+    <div class="choice-row" data-choice-id="">
+      <div class="choice-bar"></div>
+
+      <div class="choice-inner">
+        <div class="choice-emoji"></div>
+
+        <div class="choice-content">
+          <div class="choice-title">
+            <h3 class="choice-h3"></h3>
+            <span class="leader-badge" hidden>LEADER</span>
+          </div>
+          <div class="choice-notes" hidden></div>
+        </div>
+
+        <div class="vote-controls">
+          <button type="button" class="vote-btn vote-minus" aria-label="Decrease vote">−</button>
+          <div class="vote-count"></div>
+          <button type="button" class="vote-btn vote-plus" aria-label="Increase vote">+</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Create modal: choice editor row -->
+  <template id="tpl-create-choice-editor-row">
+    <div class="choice-editor" data-idx="">
+      <div class="col-emoji">
+        <button type="button" class="emoji-btn js-create-emoji" aria-label="Select emoji">🆕</button>
+      </div>
+
+      <div class="col-main">
+        <input class="input js-create-title" type="text" placeholder="Choice Title" maxlength="60" required />
+        <input class="input input-sm js-create-notes" type="text" placeholder="Optional notes..." maxlength="280" />
+      </div>
+
+      <button type="button" class="remove-choice js-create-remove" title="Remove choice" aria-label="Remove choice">
+        <i data-lucide="trash-2" class="icon icon-sm"></i>
+      </button>
+
+    </div>
+  </template>
+
+  <!-- Settings modal: existing choice row -->
+  <template id="tpl-settings-choice-row">
+    <div class="settings-choice-row" data-choice-id="">
+      <div class="settings-choice-left">
+        <div class="settings-choice-emoji"></div>
+        <div class="settings-choice-text" style="min-width: 0;">
+          <div class="settings-choice-title"></div>
+          <div class="settings-choice-notes"></div>
+        </div>
+      </div>
+
+      <button type="button" class="trash-btn js-settings-delete" title="Delete choice" aria-label="Delete choice">
+        <i data-lucide="trash-2" class="icon icon-sm"></i>
+      </button>
+
+    </div>
+  </template>
+
+  <!-- Emoji picker: emoji button -->
+  <template id="tpl-emoji-item">
+    <button type="button" class="emoji-item" data-emoji="" title=""></button>
+  </template>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Initial pass for static markup
+    window.addEventListener("DOMContentLoaded", () => lucide.createIcons());
+  </script>
+
+  <script src="/app/app.js"></script>
+</body>
+
+</html>
